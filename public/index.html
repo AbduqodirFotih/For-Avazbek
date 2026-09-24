@@ -1078,10 +1078,15 @@ $("#sched").innerHTML = CFG.schedule.map(([t,e,n])=>
 })();
 
 /* ==================== musiqa ==================== */
-/* YouTube videosi chalinadi; ochilmasa kodda yaratilgan zaxira ohang */
+/* Tartib: music/toy.mp3 (oldindan yuklanadi, darhol chalinadi) -> YouTube -> kodda yaratilgan zaxira ohang */
 const Music = (()=>{
   const btn = $("#music"), YT_ID = "ivrumxRUz_Y";
-  let mode = null, started = false, on = false;
+  let mode = null, started = false, on = false, file = null, fileFailed = false;
+
+  /* fayl sahifa ochilishi bilan yuklana boshlaydi, tugma bosilganda kutish bo'lmaydi */
+  const pre = new Audio();
+  pre.loop = true; pre.preload = "auto"; pre.src = "music/toy.mp3";
+  pre.addEventListener("error", ()=>{ fileFailed = true; }, {once:true});
 
   const Synth = (()=>{
     let ctx, master, bus, echo, noise, timer, drone=[], step=0, nextT=0, ready=false;
@@ -1249,9 +1254,16 @@ const Music = (()=>{
     });
   }
 
+  function fileToYT(){
+    if(mode!=="file" || !file) return;
+    file = null; mode = null; setOn(false); useYT();
+  }
+
   btn.addEventListener("click", ()=>{
     if(!started) return;
-    if(mode==="yt"){
+    if(mode==="file"){
+      if(on){ file.pause(); setOn(false); } else { file.play().catch(()=>{}); setOn(true); }
+    } else if(mode==="yt"){
       if(!yt || !yt.getPlayerState) return;
       on ? yt.pauseVideo() : yt.playVideo();
     } else {
@@ -1263,12 +1275,14 @@ const Music = (()=>{
     if(!started) return;
     if(document.hidden){
       resume = on; hiding = true;
-      if(mode==="yt" && yt && yt.pauseVideo) yt.pauseVideo();
+      if(mode==="file" && file) file.pause();
+      else if(mode==="yt" && yt && yt.pauseVideo) yt.pauseVideo();
       else if(mode==="synth") Synth.hide();
     } else {
       hiding = false;
       if(!resume) return;
-      if(mode==="yt" && yt && yt.playVideo) yt.playVideo();
+      if(mode==="file" && file) file.play().catch(()=>{});
+      else if(mode==="yt" && yt && yt.playVideo) yt.playVideo();
       else if(mode==="synth") Synth.show();
     }
   });
@@ -1277,7 +1291,12 @@ const Music = (()=>{
     btn.classList.add("show");
     if(started) return;
     started = true;
-    useYT();
+    if(fileFailed){ useYT(); return; }
+    file = pre; mode = "file"; file.volume = .85;
+    file.addEventListener("error", fileToYT, {once:true});
+    file.play().then(()=>setOn(true)).catch(err=>{
+      if(err && err.name==="NotAllowedError") setOn(false); else fileToYT();
+    });
   }};
 })();
 
