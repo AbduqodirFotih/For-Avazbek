@@ -1078,14 +1078,14 @@ $("#sched").innerHTML = CFG.schedule.map(([t,e,n])=>
 })();
 
 /* ==================== musiqa ==================== */
-/* Tartib: music/toy.mp3 (oldindan yuklanadi, darhol chalinadi) -> YouTube -> kodda yaratilgan zaxira ohang */
+/* Tartib: music/toy.m4a (oldindan yuklanadi, darhol chalinadi) -> YouTube -> kodda yaratilgan zaxira ohang */
 const Music = (()=>{
   const btn = $("#music"), YT_ID = "ivrumxRUz_Y";
   let mode = null, started = false, on = false, file = null, fileFailed = false;
 
   /* fayl sahifa ochilishi bilan yuklana boshlaydi, tugma bosilganda kutish bo'lmaydi */
   const pre = new Audio();
-  pre.loop = true; pre.preload = "auto"; pre.src = "music/toy.mp3";
+  pre.loop = true; pre.preload = "auto"; pre.src = "music/toy.m4a";
   pre.addEventListener("error", ()=>{ fileFailed = true; }, {once:true});
 
   const Synth = (()=>{
