@@ -248,7 +248,6 @@ body.go .hero .n.b{animation:wipe 1.9s 1.9s cubic-bezier(.6,.05,.2,1) both,shimm
 .sched .row:last-child .dt::before{bottom:50%}
 .sched .row .ev{padding-left:4px;line-height:1.25}
 .sched .row .ev small{display:block;font-size:12.5px;color:#a58a58;margin-top:2px}
-.sched-note{margin:22px 30px 0;text-align:center;font-size:15px;line-height:1.55;color:var(--gold)}
 
 /* ---------- wishes ---------- */
 .wish-form{margin:22px 16px 0;padding:24px;border:1px solid var(--line);border-radius:22px;background:rgba(0,0,0,.14)}
@@ -645,22 +644,6 @@ body.go .arch-in img{animation:kenburns 16s ease-in-out infinite alternate}
         </figure>
       </section>
 
-      <!-- Qiz bazmi -->
-      <section class="sec">
-        <h2 class="title rv">Qiz bazmi</h2>
-        <p class="invite-line rv" style="margin-top:28px">Kelinning sinfdoshlari uchun kecha (vecher)</p>
-        <div class="ceremony rv" style="margin-top:22px">
-          <div>Kelinning uyida o'tkaziladi (to'yxonada emas)</div>
-          <div>Fayziobod MFY</div>
-        </div>
-        <div class="eventtime center rv">
-          <div class="lbl" style="margin-top:22px">Vaqt</div>
-          <div class="t" data-time="qiz">18:00</div>
-          <div class="datebar"><span data-wd="qiz">Chorshanba</span><b data-d="qiz">30</b><span data-mo="qiz">Sentabr</span></div>
-          <div class="year">2026</div>
-        </div>
-      </section>
-
       <!-- Reception info + countdown + calendar -->
       <section class="sec">
         <h2 class="title rv">To'yga qolgan vaqt</h2>
@@ -709,7 +692,6 @@ body.go .arch-in img{animation:kenburns 16s ease-in-out infinite alternate}
   <section class="sec" style="margin-top:56px">
     <h2 class="title rv">To'y kuni dasturi</h2>
     <div class="sched rv" id="sched" style="margin-top:26px"></div>
-    <p class="sched-note rv">Sahna bazmida artist qo'shiq kuylaydi, qarindoshlar va kuyov jo'ralari o'yinga tushadi, gul bazm va boshqa dasturlar bo'ladi.</p>
   </section>
 
   <!-- WISHES -->
@@ -850,7 +832,6 @@ const CFG = {
   groom: "Avazbek",
   bride: "Nilufar",
   nikoh: { y: 2026, m: 10, d: 1,  time: "06:00" },
-  qiz:   { y: 2026, m: 9,  d: 30, time: "16:00" },
   venue: "Abdusamat xoji ota baxt saroyi, Xo'jand qishlog'i",
   schedule: [
     ["06:00","Nahorgi osh","yoki bomdoddan keyin"],
@@ -884,7 +865,7 @@ const esc = s => s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"'
 })();
 
 /* sana/vaqt matnlari */
-["nikoh","qiz"].forEach(k=>{
+["nikoh"].forEach(k=>{
   const e = CFG[k], dt = new Date(e.y, e.m-1, e.d);
   document.querySelectorAll(`[data-time="${k}"]`).forEach(x=>x.textContent = e.time);
   document.querySelectorAll(`[data-wd="${k}"]`).forEach(x=>x.textContent = WEEK[dt.getDay()]);
