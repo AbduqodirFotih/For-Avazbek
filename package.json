@@ -1,0 +1,12 @@
+{
+  "name": "for-avazbek",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Avazbek & Nilufar to'y taklifnomasi",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
