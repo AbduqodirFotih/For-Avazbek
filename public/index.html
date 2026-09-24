@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Avazbek & Nilufar — To'y taklifnomasi</title>
 <meta name="description" content="Avazbek va Nilufar to'yiga taklifnoma">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23052013'/%3E%3Cpath d='M16 25s-9-5.6-9-11.8C7 9.7 9.4 8 11.8 8c1.7 0 3.2.9 4.2 2.3C17 8.9 18.500 8 20.200 8 22.600 8 25 9.700 25 13.200 25 19.400 16 25 16 25z' fill='%23e3bb7a'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Avazbek & Nilufar — To'y taklifnomasi">
+<meta property="og:description" content="Sizni to'yimizga taklif qilamiz. 1-oktyabr, 2026.">
+<meta property="og:image" content="https://avazbek-nilufar-wedding.vercel.app/photos/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#04150c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,9 +378,9 @@ body.go .hero .n.b{animation:wipe 1.9s 1.9s cubic-bezier(.6,.05,.2,1) both,shimm
 #sheetBack{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.62);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
 #sheetBack.on{opacity:1;visibility:visible}
 #sheet{position:fixed;left:50%;bottom:0;z-index:96;width:min(430px,100%);transform:translate(-50%,105%);
-  transition:transform .5s cubic-bezier(.2,.9,.3,1);border-radius:22px 22px 0 0;overflow:hidden;
+  visibility:hidden;transition:transform .5s cubic-bezier(.2,.9,.3,1),visibility 0s .5s;border-radius:22px 22px 0 0;overflow:hidden;
   background:linear-gradient(170deg,#0a3a20,#04180d);box-shadow:0 -10px 50px rgba(0,0,0,.6)}
-#sheet.on{transform:translate(-50%,0)}
+#sheet.on{transform:translate(-50%,0);visibility:visible;transition:transform .5s cubic-bezier(.2,.9,.3,1),visibility 0s}
 .sh-head{display:flex;align-items:center;justify-content:center;position:relative;height:66px;background:linear-gradient(180deg,#eac889,#dbab60)}
 .sh-head span{font-family:"Playfair Display",serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:19px;color:#06200f}
 .sh-head button{position:absolute;right:16px;top:50%;translate:0 -50%;font-size:30px;line-height:1;color:rgba(6,32,15,.8);padding:4px 8px}
@@ -995,7 +1003,8 @@ $("#sched").innerHTML = CFG.schedule.map(([t,e,n])=>
 
   function card(w){
     const d = new Date(w.t);
-    const when = isNaN(d) ? "" : d.toLocaleString("uz-UZ", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+    const p2 = n => String(n).padStart(2,"0");
+    const when = isNaN(d) ? "" : `${p2(d.getDate())}.${p2(d.getMonth()+1)}.${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
     return `<div class="wish"><div class="h"><b>${esc(w.n)}</b><span>${when}</span></div><p>${esc(w.m)}</p></div>`;
   }
   function show(items){
@@ -1069,10 +1078,10 @@ $("#sched").innerHTML = CFG.schedule.map(([t,e,n])=>
 })();
 
 /* ==================== musiqa ==================== */
-/* Tartib: music/toy.mp3 (bo'lsa) -> YouTube videosi -> kodda yaratilgan zaxira ohang */
+/* YouTube videosi chalinadi; ochilmasa kodda yaratilgan zaxira ohang */
 const Music = (()=>{
-  const btn = $("#music"), FILE = "music/toy.mp3", YT_ID = "ivrumxRUz_Y";
-  let mode = null, started = false, on = false, file = null;
+  const btn = $("#music"), YT_ID = "ivrumxRUz_Y";
+  let mode = null, started = false, on = false;
 
   const Synth = (()=>{
     let ctx, master, bus, echo, noise, timer, drone=[], step=0, nextT=0, ready=false;
@@ -1203,7 +1212,7 @@ const Music = (()=>{
   function useSynth(){
     if(mode==="synth") return;
     try{ if(yt && yt.destroy) yt.destroy(); }catch(e){}
-    yt = null; mode = "synth"; file = null;
+    yt = null; mode = "synth";
     try{ Synth.play(); setOn(true); }catch(e){ btn.classList.remove("show"); }
   }
 
@@ -1245,8 +1254,6 @@ const Music = (()=>{
     if(mode==="yt"){
       if(!yt || !yt.getPlayerState) return;
       on ? yt.pauseVideo() : yt.playVideo();
-    } else if(mode==="file"){
-      if(on){ file.pause(); setOn(false); } else { file.play().catch(()=>{}); setOn(true); }
     } else {
       if(on){ Synth.pause(); setOn(false); } else { Synth.play(); setOn(true); }
     }
@@ -1257,13 +1264,11 @@ const Music = (()=>{
     if(document.hidden){
       resume = on; hiding = true;
       if(mode==="yt" && yt && yt.pauseVideo) yt.pauseVideo();
-      else if(mode==="file") file.pause();
       else if(mode==="synth") Synth.hide();
     } else {
       hiding = false;
       if(!resume) return;
       if(mode==="yt" && yt && yt.playVideo) yt.playVideo();
-      else if(mode==="file") file.play().catch(()=>{});
       else if(mode==="synth") Synth.show();
     }
   });
@@ -1272,12 +1277,7 @@ const Music = (()=>{
     btn.classList.add("show");
     if(started) return;
     started = true;
-    file = new Audio(FILE); file.loop = true; file.volume = .8; file.preload = "auto";
-    const noFile = ()=>{ if(mode) return; file = null; useYT(); };
-    file.addEventListener("error", noFile, {once:true});
-    file.play().then(()=>{ mode="file"; setOn(true); }).catch(err=>{
-      if(err && err.name==="NotAllowedError"){ mode="file"; setOn(false); } else noFile();
-    });
+    useYT();
   }};
 })();
 
